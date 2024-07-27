@@ -1,0 +1,41 @@
+/**
+ * Calculate UK Income Tax based on the provided tax code.
+ * If the tax code is not provided or unrecognized, use a default personal allowance of ÂŁ12,570.
+ * 
+ * @param {number} income The annual income.
+ * @param {string} [taxCode="1257L"] The tax code (e.g., "1257L").
+ * @return {number} The amount of income tax to be paid.
+ * @customfunction
+ */
+function calculateUKIncomeTax(income, taxCode) {
+  // Default personal allowance
+  let defaultPersonalAllowance = 12570;
+  
+  // Determine personal allowance based on tax code
+  let personalAllowance = defaultPersonalAllowance;
+  
+  if (taxCode && /^(\d{3,4}L)$/i.test(taxCode)) {
+    personalAllowance = parseInt(taxCode.replace('L', '')) * 10;
+  }
+
+  // Ensure personal allowance is within typical bounds
+  if (personalAllowance > defaultPersonalAllowance) {
+    personalAllowance = defaultPersonalAllowance;
+  } else if (personalAllowance < 0) {
+    personalAllowance = 0;
+  }
+
+  // Income Tax calculation
+  let incomeTax;
+  if (income <= personalAllowance) {
+    incomeTax = 0;
+  } else if (income <= 50270) {
+    incomeTax = (income - personalAllowance) * 0.20;
+  } else if (income <= 150000) {
+    incomeTax = (income - 50270) * 0.40 + (50270 - personalAllowance) * 0.20;
+  } else {
+    incomeTax = (income - 150000) * 0.45 + (150000 - 50270) * 0.40 + (50270 - personalAllowance) * 0.20;
+  }
+
+  return incomeTax;
+}
